@@ -1,0 +1,52 @@
+# Composer setup
+FROM composer:1.7 as composer
+
+# Change working dir to /app/
+WORKDIR /app
+
+# Require in pretissimo
+RUN composer global require hirak/prestissimo
+
+# Copy required files
+COPY composer.json composer.lock /app/
+COPY database /app/database
+COPY tests /app/tests
+
+# Install composer dependencies
+RUN composer install \
+    --no-ansi \
+    --no-interaction \
+    --no-progress \
+    --optimize-autoloader \
+    --ignore-platform-reqs
+
+# Tidy up folder
+RUN rm -rf composer.json composer.lock database/ tests/
+
+# Apache setup
+FROM php:7.2-apache
+
+ENV PHP_OPCACHE_VALIDATE_TIMESTAMPS=0 \
+    PHP_OPCACHE_MAX_ACCELERATED_FILES=7963 \
+    PHP_OPCACHE_MEMORY_CONSUMPTION=192
+
+# Change working dir to /var/www/html/
+WORKDIR /var/www/html
+
+# Do update & enable pdo_mysql & enable rewrite
+RUN apt-get update && \
+    rm -rf /var/lib/apt/lists/* && \
+    docker-php-ext-install pdo_mysql opcache && \
+    a2enmod headers rewrite
+
+# Copy files from composer build and place inside of /var/www/html
+COPY --from=composer --chown=www-data:www-data /app /var/www/html
+
+COPY docker/apache/api.conf /etc/apache2/sites-available/000-default.conf
+COPY docker/php/opcache.ini /usr/local/etc/php/conf.d/opcache.ini
+
+# Copy all files into /var/www/html
+COPY . .
+
+# Remove docker folder from image
+RUN rm -rf docker/
