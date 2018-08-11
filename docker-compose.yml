@@ -1,0 +1,42 @@
+version: "3.5"
+
+services:
+
+  api:
+    build:
+      context: .
+      dockerfile: docker/api-dockerfile
+    image: 7otk/ecommerce:local
+    ports:
+      - 80:80
+    depends_on:
+      - database
+    networks:
+      - api
+
+  database:
+    image: mariadb:latest
+    ports:
+      - 3306:3306
+    volumes:
+      - database-data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+    networks:
+      - api
+
+  redis:
+    image: bitnami/redis:latest
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis-data:/bitnami
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+
+networks:
+  api:
+
+volumes:
+  database-data:
+  redis-data:
