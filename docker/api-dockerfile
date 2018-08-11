@@ -1,0 +1,44 @@
+# Composer setup
+FROM composer:1.7 as composer
+
+# Change working dir to /app/
+WORKDIR /app
+
+# Copy required files
+COPY composer.json composer.lock /app/
+COPY database /app/database
+COPY tests /app/tests
+
+# Install composer dependencies
+RUN composer install \
+    --no-ansi \
+    --no-interaction \
+    --no-progress \
+    --optimize-autoloader \
+    --ignore-platform-reqs
+
+# Tidy up folder
+RUN rm -rf composer.json composer.lock database/ tests/
+
+# Apache setup
+FROM php:7.2-apache
+
+# Change working dir to /var/www/html/
+WORKDIR /var/www/html
+
+# Do update & enable pdo_mysql & enable rewrite
+RUN apt-get update && \
+    rm -rf /var/lib/apt/lists/* && \
+    docker-php-ext-install pdo_mysql && \
+    a2enmod headers rewrite
+
+# Copy files from composer build and place inside of /var/www/html
+COPY --from=composer --chown=www-data:www:data /app /var/www/html
+
+COPY docker/apache/api.conf /etc/apache2/sites-available/000-default.conf
+
+# Copy all files into /var/www/html
+COPY . .
+
+# Remove docker folder from image
+RUN rm -rf docker/
