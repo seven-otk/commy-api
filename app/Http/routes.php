@@ -12,6 +12,27 @@
  * @var $router \Laravel\Lumen\Routing\Router
  */
 
-$router->get('/', function () use ($router) {
-    echo 'My product.';
-});
+$router->post('store', 'StoreController@store');
+
+$router->post('authenticate/register', 'AuthenticationController@register');
+$router->post('authenticate/login', 'AuthenticationController@login');
+
+// Get user information -> get ~ needs middleware
+// Login User -> post
+
+// Register User -> post
+
+// Get all categories -> get
+// Create category -> post
+// Delete category -> delete ~ assign all other categories to a new one?
+// Update Category -> patch
+
+// Get Store -> get
+// Add Store -> post ~ middleware for user id
+// Update Store -> patch ~ middleware for user id
+// Delete Store -> delete ~ middleware for user id
+
+// Get Domain Information ~ Who is? -> get ~ middleware for user id -> store->id
+// Update Domain -> patch ~ middleware for user id -> store->id
+// Add Domain -> post ~ middleware for user id -> store->id
+// Deactivate Domain -> delete ~ middleware for user id -> store->id
