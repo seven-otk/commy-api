@@ -23,9 +23,8 @@ $app = new Laravel\Lumen\Application(
     realpath(__DIR__.'/../')
 );
 
-// $app->withFacades();
-
-// $app->withEloquent();
+ $app->withFacades();
+ $app->withEloquent();
 
 /*
 |--------------------------------------------------------------------------
@@ -96,7 +95,7 @@ $app->singleton(
 $app->router->group([
     'namespace' => 'App\Http\Controllers',
 ], function ($router) {
-    require __DIR__.'/../routes/web.php';
+    require __DIR__ . '/../app/Http/routes.php';
 });
 
 return $app;
