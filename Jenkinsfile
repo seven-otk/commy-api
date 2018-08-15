@@ -5,7 +5,7 @@ node {
     def imageName = "7otk/commy-api"
     def scmVars = null
 
-    start('prerequisite') {
+    stage('prerequisite') {
         scmVars = checkout(scm)
     }
 
