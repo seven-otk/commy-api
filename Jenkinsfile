@@ -5,11 +5,6 @@ node {
     def imageName = "7otk/commy-api"
     def scmVars = null
 
-    stage('fix-permissions') {
-        sh "echo alias docker='sudo docker ' > ~/.bashrc"
-        sh 'source ~/.bashrc'
-    }
-
     stage('prerequisite') {
         scmVars = checkout(scm)
     }
