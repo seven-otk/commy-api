@@ -1,5 +1,5 @@
 # Composer setup
-FROM composer:1.7 as composer
+FROM composer:latest as composer
 
 # Change working dir to /app/
 WORKDIR /app
