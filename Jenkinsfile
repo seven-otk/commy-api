@@ -10,7 +10,16 @@ node {
     }
 
     stage('build') {
+        def revision = scmVars.GIT_COMMIT[0..6]
 
-    sh 'docker ps'
+        sh 'sudo docker build -t ${imageName}:${revision} -f docker/api-dockerfile .'
+    }
+
+    stage('deploy') {
+        if (env.BRANCH_NAME == 'master') {
+           sh 'sudo docker push ${imageName}:latest'
+        }
+
+        sh 'sudo docker push ${imageName}:${env.BRANCH_NAME}'
     }
 }
