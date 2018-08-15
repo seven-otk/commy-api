@@ -11,6 +11,6 @@ node {
 
     stage('build') {
 
-    sh 'whoami'
+    sh 'docker ps'
     }
 }
