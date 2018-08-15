@@ -11,14 +11,17 @@ node {
 
     stage('build') {
         def revision = scmVars.GIT_COMMIT[0..6]
-        images.api = docker.build("${imageName}:${revision}", "-f docker/api-dockerfile .")
+
+
+
+        sh 'sudo docker build -t ${imageName}:${revision} -f docker/api-dockerfile .'
     }
 
     stage('deploy') {
         if (env.BRANCH_NAME == 'master') {
-            images.api.push('latest')
+           sh 'sudo docker push ${imageName}:latest'
         }
 
-        images.api.push(env.BRANCH_NAME)
+        sh 'sudo docker push ${imageName}:${env.BRANCH_NAME}'
     }
 }
