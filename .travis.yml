@@ -37,8 +37,5 @@ jobs:
     - stage: build docker image
       name: "Build and Deploy Docker Image"
       services: docker
-      before_script:
-        - gzip -dc docker/busybox.tar.gz | docker load
-        - chmod +x ./scripts/docker-build-push.sh
       script:
         - ./scripts/docker-build-push.sh
