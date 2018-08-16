@@ -16,7 +16,7 @@ before_install:
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
   - echo "Logged into Docker Hub"
 
-before_script:
+install:
   - composer install --no-interaction --no-ansi --optimize-autoloader --ignore-platform-reqs
 
 jobs:
@@ -27,4 +27,4 @@ jobs:
 
     - stage: build and deploy new docker image
       script:
-        - ./script/docker-build-push
+        - ./scripts/docker-build-push
