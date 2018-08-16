@@ -19,7 +19,7 @@ jobs:
   include:
     - stage: test
       script:
-        - ./scripts/phpynit-tests.sh
+        - ./scripts/phpunit-tests.sh
 
     - stage: build and deploy new docker image
       script:
