@@ -1,5 +1,10 @@
 sudo: true
 
+env:
+  global:
+    - DOCKER_CACHE_DIR=$HOME/.cache/docker
+    - DOCKER_API_CACHE=$CACHE_DIR/api
+
 branches:
   only:
     - master
@@ -11,13 +16,17 @@ cache:
   directories:
     - $HOME/.composer/cache/files
 
-before_script:
-  - chmod +x ./scripts/docker-build-push.sh
-  - chmod +x ./scripts/phpunit-tests.sh
+before_install:
+  - if [ -f ${DOCKER_API_CACHE} ]; then gunzip -c ${DOCKER_API_CACHE} | docker load; fi
+
+install:
+  - if [ ! -f ${DOCKER_API_CACHE} ]; then docker save 7otk/commy_api:{$TRAVIS_BRANCH} | gzip > ${DOCKER_API_CACHE}; fi
 
 jobs:
   include:
     - stage: test
+      before_script:
+        - chmod +x ./scripts/phpunit-tests.sh
       name: "Run PHPUnit Tests"
       language: php
       php:
@@ -28,5 +37,8 @@ jobs:
     - stage: build docker image
       name: "Build and Deploy Docker Image"
       services: docker
+      before_script:
+        - gzip -dc docker/busybox.tar.gz | docker load
+        - chmod +x ./scripts/docker-build-push.sh
       script:
         - ./scripts/docker-build-push.sh
