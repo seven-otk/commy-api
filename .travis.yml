@@ -1,11 +1,5 @@
 sudo: true
 
-branches:
-  only:
-    - master
-    - develop
-    - staging
-
 cache:
   bundler: true
   directories:
