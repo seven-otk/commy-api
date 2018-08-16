@@ -2,7 +2,7 @@
 
 set -ev
 
-docker build $IMAGE_NAME -f docker/api-dockerfile .
+docker build -t $IMAGE_NAME -f docker/api-dockerfile .
 
 docker tag $IMAGE_NAME:$TRAVIS_BRANCH;
 docker push $IMAGE_NAME:$TRAVIS_BRANCH;
