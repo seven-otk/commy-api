@@ -34,9 +34,7 @@ ENV PHP_OPCACHE_VALIDATE_TIMESTAMPS=0 \
 WORKDIR /var/www/html
 
 # Do update & enable pdo_mysql & enable rewrite
-RUN apt-get update && \
-    rm -rf /var/lib/apt/lists/* && \
-    docker-php-ext-install pdo_mysql opcache && \
+RUN docker-php-ext-install pdo_mysql opcache && \
     a2enmod headers rewrite
 
 # Copy files from composer build and place inside of /var/www/html
@@ -49,4 +47,4 @@ COPY docker/php/opcache.ini /usr/local/etc/php/conf.d/opcache.ini
 COPY . .
 
 # Remove docker folder from image
-RUN rm -rf docker/
+RUN rm -rf /var/www/html/docker

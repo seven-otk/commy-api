@@ -13,5 +13,5 @@
  */
 
 $router->get('/', function () use ($router) {
-    echo 'My product.';
+    echo 'Test build';
 });
