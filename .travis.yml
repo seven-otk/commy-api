@@ -3,7 +3,7 @@ sudo: true
 env:
   global:
     - DOCKER_CACHE_DIR=$HOME/.cache/docker
-    - DOCKER_API_CACHE=$CACHE_DIR/api
+    - DOCKER_API_CACHE=$CACHE_DIR/${TRAVIS_BRANCH}
 
 branches:
   only:
@@ -15,12 +15,6 @@ cache:
   bundler: true
   directories:
     - $HOME/.composer/cache/files
-
-before_install:
-  - if [ -f ${DOCKER_CACHE_DIR} ]; then gunzip -c ${DOCKER_CACHE_DIR} | docker load; fi
-
-install:
-  - if [ ! -f ${DOCKER_CACHE_DIR} ]; then docker save 7otk/commy_api:{$TRAVIS_BRANCH} | gzip > ${DOCKER_CACHE_DIR}; fi
 
 jobs:
   include:
@@ -36,8 +30,12 @@ jobs:
 
     - stage: build docker image
       name: "Build and Deploy Docker Image"
+      before_install:
+        - if [ -f ${DOCKER_API_CACHE} ]; then gunzip -c ${DOCKER_API_CACHE} | docker load; fi
+      install:
+        - if [ ! -f ${DOCKER_API_CACHE} ]; then docker save 7otk/commy_api:{$TRAVIS_BRANCH} | gzip > ${DOCKER_API_CACHE}; fi
       before_script:
-              - chmod +x ./scripts/docker-build-push.sh
+        - chmod +x ./scripts/docker-build-push.sh
       services: docker
       script:
         - ./scripts/docker-build-push.sh
