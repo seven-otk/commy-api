@@ -36,6 +36,8 @@ jobs:
 
     - stage: build docker image
       name: "Build and Deploy Docker Image"
+      before_script:
+              - chmod +x ./scripts/docker-build-push.sh
       services: docker
       script:
         - ./scripts/docker-build-push.sh
