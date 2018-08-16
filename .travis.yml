@@ -1,15 +1,10 @@
 sudo: true
 
-language: php
-
-env:
-  - IMAGE_NAME=7otk/commy-api
-
-php:
-  - '7.2'
-
-services:
-  - docker
+branches:
+  only:
+    - master
+    - develop
+    - staging
 
 before_script:
  - chmod +x ./scripts/docker-build-push.sh
@@ -18,9 +13,13 @@ before_script:
 jobs:
   include:
     - stage: test
+      language: php
+      php:
+        - '7.2'
       script:
         - ./scripts/phpunit-tests.sh
 
-    - stage: build and deploy new docker image
+    - stage: build docker image
+      services: docker
       script:
         - ./scripts/docker-build-push.sh
