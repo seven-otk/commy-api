@@ -9,7 +9,7 @@ docker build -t $IMAGE_NAME:${TRAVIS_COMMIT:0:7} -f docker/api-dockerfile .
 docker push $IMAGE_NAME:${TRAVIS_COMMIT:0:7};
 
 if [ ${TRAVIS_BRANCH} = "master" ]; then
-    docker tag $IMAGE_NAME:latest;
+    docker tag $IMAGE_NAME:${TRAVIS_COMMIT:0:7} $IMAGE_NAME:latest;
     docker push $IMAGE_NAME:latest;
 fi
 
