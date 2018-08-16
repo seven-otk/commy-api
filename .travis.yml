@@ -1,13 +1,13 @@
-sudo: required
+sudo: true
 env:
   - IMAGE_NAME=7otk/commy-api
-  -
 
-language: ruby
+language: php
 
 services:
   - docker
-
+  
 before_install:
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
   - docker build -t $IMAGE_NAME:latest -f docker/api-dockerfile .
   - docker push $IMAGE_NAME:latest
