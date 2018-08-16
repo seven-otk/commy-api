@@ -11,22 +11,15 @@ php:
 services:
   - docker
 
-before_install:
-  - echo "Login to Docker Hub"
-  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-  - echo "Logged into Docker Hub"
-
-install:
-  - composer install --no-interaction --no-ansi --optimize-autoloader --ignore-platform-reqs
-
 before_script:
  - chmod +x ./scripts/docker-build-push.sh
+ - chmod +z ./scripts/phpunit-tests.sh
 
 jobs:
   include:
     - stage: test
       script:
-        - phpunit
+        - ./scripts/phpynit-tests.sh
 
     - stage: build and deploy new docker image
       script:

@@ -2,6 +2,8 @@
 
 set -ev
 
+echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+
 docker build -t $IMAGE_NAME -f docker/api-dockerfile .
 
 docker tag $IMAGE_NAME:$TRAVIS_BRANCH;
