@@ -16,12 +16,11 @@ before_install:
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
   - echo "Logged into Docker Hub"
 
+before_script:
+  - composer install --no-interaction --no-ansi --optimize-autoloader --ignore-platform-reqs
+
 jobs:
   include:
-    - stage: install composer packages
-      script:
-        - composer install --no-interaction --no-ansi --optimize-autoloader --ignore-platform-reqs
-
     - stage: test
       script:
         - phpunit
