@@ -1,0 +1,13 @@
+sudo: required
+env:
+  - IMAGE_NAME=7otk/commy-api
+  -
+
+language: ruby
+
+services:
+  - docker
+
+before_install:
+  - docker build -t $IMAGE_NAME:latest -f docker/api-dockerfile .
+  - docker push $IMAGE_NAME:latest
