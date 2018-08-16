@@ -1,13 +1,31 @@
 sudo: true
-env:
-  - IMAGE_NAME=7otk/commy-api
 
 language: php
 
+env:
+  - IMAGE_NAME=7otk/commy-api
+
+php:
+  - '7.2'
+
 services:
   - docker
-  
+
 before_install:
+  - echo "Login to Docker Hub"
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-  - docker build -t $IMAGE_NAME:latest -f docker/api-dockerfile .
-  - docker push $IMAGE_NAME:latest
+  - echo "Logged into Docker Hub"
+
+jobs:
+  include:
+    - stage: install composer packages
+      script:
+        - composer install --no-interaction --no-ansi --optimize-autoloader --ignore-platform-reqs
+
+    - stage: test
+      script:
+        - phpunit
+
+    - stage: build and deploy new docker image
+      script:
+        - ./script/docker-build-push
