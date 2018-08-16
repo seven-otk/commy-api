@@ -17,10 +17,10 @@ cache:
     - $HOME/.composer/cache/files
 
 before_install:
-  - if [ -f ${DOCKER_API_CACHE} ]; then gunzip -c ${DOCKER_API_CACHE} | docker load; fi
+  - if [ -f ${DOCKER_CACHE_DIR} ]; then gunzip -c ${DOCKER_CACHE_DIR} | docker load; fi
 
 install:
-  - if [ ! -f ${DOCKER_API_CACHE} ]; then docker save 7otk/commy_api:{$TRAVIS_BRANCH} | gzip > ${DOCKER_API_CACHE}; fi
+  - if [ ! -f ${DOCKER_CACHE_DIR} ]; then docker save 7otk/commy_api:{$TRAVIS_BRANCH} | gzip > ${DOCKER_CACHE_DIR}; fi
 
 jobs:
   include:
