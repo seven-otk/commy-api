@@ -5,11 +5,7 @@ set -ev
 app_name="7otk/commy-api"
 local_image="api_$app_name"
 
-echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin;
-
-echo "Logged in to Docker Hub";
-
-docker build "$app_name" -f docker/api-dockerfile .
+docker build $app_name -f docker/api-dockerfile .
 
 docker tag $app_name:$TRAVIS_BRANCH;
 docker push $app_name:$TRAVIS_BRANCH;
