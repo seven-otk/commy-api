@@ -6,13 +6,26 @@ branches:
     - develop
     - staging
 
+cache:
+  bundler: true
+  directories:
+    - $HOME/.composer/cache/files
+    - $HOME/docker
+
+before_cache:
+  - > mkdir -p $HOME/docker && docker images -a --filter='dangling=false' --format '{{.Repository}}:{{.Tag}} {{.ID}}' | xargs -n 2 -t sh -c 'test -e $HOME/docker/$1.tar.gz || docker save $0 | gzip -2 > $HOME/docker/$1.tar.gz'
+
+before_install:
+  - if [[ -d $HOME/docker ]]; then ls $HOME/docker/*.tar.gz | xargs -I {file} sh -c "zcat {file} | docker load"; fi
+
 before_script:
- - chmod +x ./scripts/docker-build-push.sh
- - chmod +x ./scripts/phpunit-tests.sh
+  - chmod +x ./scripts/docker-build-push.sh
+  - chmod +x ./scripts/phpunit-tests.sh
 
 jobs:
   include:
     - stage: test
+      name: "Run PHPUnit Tests"
       language: php
       php:
         - '7.2'
@@ -20,6 +33,7 @@ jobs:
         - ./scripts/phpunit-tests.sh
 
     - stage: build docker image
+      name: "Build and Deploy Docker Image"
       services: docker
       script:
         - ./scripts/docker-build-push.sh
